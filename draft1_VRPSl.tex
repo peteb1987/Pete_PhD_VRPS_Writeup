@@ -1,0 +1,348 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{ifpdf}
+ \ifpdf
+   % pdf code
+ \else
+   % dvi code
+ \fi
+\usepackage{cite}
+\ifCLASSINFOpdf
+  \usepackage[pdftex]{graphicx}
+   %\graphicspath{{../pdf/}{../jpeg/}}
+   \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  \usepackage[dvips]{graphicx}
+  %\graphicspath{{../eps/}}
+  \DeclareGraphicsExtensions{.eps}
+\fi
+\usepackage[cmex10]{amsmath}
+\usepackage{algorithmic}
+\usepackage{array}
+\usepackage{mdwmath}
+\usepackage{mdwtab}
+\usepackage{eqparbox}
+\usepackage[caption=false,font=footnotesize]{subfig}
+\usepackage{fixltx2e}
+\usepackage{url}
+\usepackage{color}
+
+\newenvironment{meta}[0]{\color{red} \em}{}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+\title{Filtering and Smoothing Algorithms for Nonlinear Variable Rate Models with Applications in Tracking}
+
+\author{Pete~Bunch,~\IEEEmembership{}
+        Simon~Godsill,~\IEEEmembership{Member,~IEEE,}% <-this % stops a space
+\thanks{P. Bunch and S. Godsill are with the Department
+of Engineering, Cambridge University, UK. email: \{pb404,sjg30\}@cam.ac.uk}% <-this % stops a space
+\thanks{Manuscript received January 01, 1901; revised January 02, 1901.}}
+
+% The paper headers
+\markboth{IEEE Transaction in Signal Processing,~Vol.~1, No.~1, January~1901}%
+{Bunch \& Godsill \MakeLowercase{\textit{et al.}}: Filtering and Smoothing Algorithms for Nonlinear Variable Rate Models with Applications in Tracking}
+
+% make the title area
+\maketitle
+
+\begin{abstract}
+The abstract goes here.
+\end{abstract}
+
+\begin{IEEEkeywords}
+
+\end{IEEEkeywords}
+
+
+
+\section{Introduction}
+
+\IEEEPARstart{C}{onventional} sequential state-space inference methods use discrete-time hidden Markov models to estimate an unkown quantity evolving over time. These models may be developed by discretisation of a continuous-time model, or by formulation directly in discrete time. In either case, it is common practice to use a grid of time points synchronous with the observations. Such ``fixed rate'' models may give poor representations of processes which exhibit structured behaviour over longer time scales. In such cases, a ``variable rate'' model may prove advantageous - the model is discretised onto a set of set of random times, which characterise the transitions in system behaviour.
+
+Using a variable rate model, it is necessary to estimate both the set of changepoints and the (nonlinearly) evolving state. This is not analytically tractable so numerical approximations must be employed. The particle filter (introduced by \cite{Gordon1993}) and smoother (see \cite{Doucet2000a,Godsill2004}) are such schemes which approximate the posterior state distribution using a set of samples, or ``particles'', drawn sequentially from it.  A thorough introduction to particle filtering and smoothing methods can be found in \cite{Cappe2007,Doucet2009}.
+
+Target tracking algorithms are commonly based upon fixed rate models (see, e.g. \cite{Li2003} for a thorough survey), in which the target kinematics (position, velocity, etc.) are estimated at a set of fixed times at which observations (e.g. radar measurements) are made. In \cite{Godsill2004a,Godsill2007a,Godsill2007}, variable rate models were introduced for tracking, in which the state trajectory is divided up by a set of changepoints between which the motion follows a deterministic path governed by kinematic parameters (accelerations, etc.) which are fixed for that segment. The changepoint times and segment parameters may be estimated using a numerical approximation called the variable rate particle filter (VRPF).
+
+In this paper we review the VRPF and introduce improvements using the resample-move method of \cite{Gilks2001}. We then describe a new variable rate particle smoother (VRPS) algorithm, which uses a novel Markov Chain Monte Carlo (MCMC) formulation to circumvent difficulties of the conventional methods. In section~\ref{}, we adapt the intrinsic-coordinate models of \cite{Godsill2007a,Godsill2007} for use with the new smoothing algorithm. Simulations are presented in section~\ref{}.
+
+
+
+\section{Variable Rate Models}
+
+We consider a general model from time $0$ to $T$, between which observations, $\{y_1 \dots y_N\}$, are made at times $\{t_1 \dots t_N\}$. During this period, an unknown number, $K$, of changepoints occur at times $\{ \tau_1 \dots \tau_K \}$, each with associated motion parameters, $\{ w_1 \dots w_K \}$. Discrete sets containing multiple values over time will be written as, e.g. $y_{1:n} = \{y_1 \dots y_n\}$.
+
+Changepoints are treated as random variables, dependent on the previous sequence of times.
+
+\begin{IEEEeqnarray}{rCl}
+ \tau_{k} & \sim & p(\tau_{k}|\tau_{1:k-1})
+\end{IEEEeqnarray}
+
+In continuous time, the dynamics of the latent state, $x(t)$, may be written as a differential equation.
+
+\begin{IEEEeqnarray}{rCl}
+ dx(t) & = & g(x(t), w(t), \tau_{1:k})dt
+\end{IEEEeqnarray}
+
+The dynamics are thus dependent on the sequence of changepoints which have occured so far, $\tau_{1:k}$, and a continuously varying random innovation, $w(t)$. Such a system may be discretised by assuming that this random innovation is constant between changepoints. This yields an equivalent discrete time system represented by a difference equation, in which the state at time $\tau_k$ is written as $x_k$.
+
+\begin{IEEEeqnarray}{rCl}
+ x_k & = & f(x_{k-1}, w_{k-1}, \tau_{1:k})
+\end{IEEEeqnarray}
+
+In order to calculate measurement likelihoods, it is also necessary to estimate the latent state at the time of the observations, $t_n$. Once $\tau_{k-1}$, $x_{k-1}$ and $w_{k-1}$ have been estimated, this may be calculated deterministically using the same state equation. The state at time $t_n$ at which the $n$th observation is made is denoted $\hat{x}_n$.
+
+\begin{IEEEeqnarray}{rCl}
+ \hat{x}_n & = & f(x_{k-1}, w_{k-1}, \tau_{1:k-1}, t_n)
+\end{IEEEeqnarray}
+
+To keep the following derivations concise, we introduce an additional variable for each changepoint-parameter pair $\theta_k = \{\tau_k, x_k, w_k\}$.
+
+It will be desirable to denote the set of changepoints and parameters (of unspecified size) which occur within some range of time. This will be written as $\theta_{[s,t]} = \{ \theta_k \forall k : s<\theta_k<t \}$. Note that such a variable not only conveys where changepoints occur, but also where they do not within the specfied range.
+
+\begin{itemize}
+	\item Notation for variable rate models
+	\item Basic p-d model
+\end{itemize}
+
+
+
+\section{The Variable Rate Particle Filter}
+
+\begin{itemize}
+	\item Basic filter
+	\item Improved performance using RM and UKF
+\end{itemize}
+
+
+
+\section{The Variable Rate Particles Smoother}
+
+\begin{itemize}
+	\item Failure of ordinary backward sampling method
+	\item MCMC method
+\end{itemize}
+
+
+
+\section{Variable Rate Models for Tracking}
+
+\begin{itemize}
+	\item 2D Intrinsic coordinate model
+	\item Full-rank 2D model
+\end{itemize}
+
+
+
+\section{Simulations}
+
+\begin{itemize}
+	\item Improved RMSE performance
+	\item Improved particle diversity
+\end{itemize}
+
+
+
+
+
+% Template bits
+
+% An example of a floating figure using the graphicx package.
+% Note that \label must occur AFTER (or within) \caption.
+% For figures, \caption should occur after the \includegraphics.
+% Note that IEEEtran v1.7 and later has special internal code that
+% is designed to preserve the operation of \label within \caption
+% even when the captionsoff option is in effect. However, because
+% of issues like this, it may be the safest practice to put all your
+% \label just after \caption rather than within \caption{}.
+%
+% Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
+% option should be used if it is desired that the figures are to be
+% displayed while in draft mode.
+%
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width=2.5in]{myfigure}
+% where an .eps filename suffix will be assumed under latex, 
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+%\caption{Simulation Results}
+%\label{fig_sim}
+%\end{figure}
+
+% Note that IEEE typically puts floats only at the top, even when this
+% results in a large percentage of a column being occupied by floats.
+
+
+% An example of a double column floating figure using two subfigures.
+% (The subfig.sty package must be loaded for this to work.)
+% The subfigure \label commands are set within each subfloat command, the
+% \label for the overall figure must come after \caption.
+% \hfil must be used as a separator to get equal spacing.
+% The subfigure.sty package works much the same way, except \subfigure is
+% used instead of \subfloat.
+%
+%\begin{figure*}[!t]
+%\centerline{\subfloat[Case I]\includegraphics[width=2.5in]{subfigcase1}%
+%\label{fig_first_case}}
+%\hfil
+%\subfloat[Case II]{\includegraphics[width=2.5in]{subfigcase2}%
+%\label{fig_second_case}}}
+%\caption{Simulation results}
+%\label{fig_sim}
+%\end{figure*}
+%
+% Note that often IEEE papers with subfigures do not employ subfigure
+% captions (using the optional argument to \subfloat), but instead will
+% reference/describe all of them (a), (b), etc., within the main caption.
+
+
+% An example of a floating table. Note that, for IEEE style tables, the 
+% \caption command should come BEFORE the table. Table text will default to
+% \footnotesize as IEEE normally uses this smaller font for tables.
+% The \label must come after \caption as always.
+%
+%\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+%\caption{An Example of a Table}
+%\label{table_example}
+%\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{table}
+
+
+% Note that IEEE does not put floats in the very first column - or typically
+% anywhere on the first page for that matter. Also, in-text middle ("here")
+% positioning is not used. Most IEEE journals use top floats exclusively.
+% Note that, LaTeX2e, unlike IEEE journals, places footnotes above bottom
+% floats. This can be corrected via the \fnbelowfloat command of the
+% stfloats package.
+
+
+
+\section{Conclusion}
+The conclusion goes here.
+
+
+
+
+
+% if have a single appendix:
+%\appendix[Proof of the Zonklar Equations]
+% or
+%\appendix  % for no appendix heading
+% do not use \section anymore after \appendix, only \section*
+% is possibly needed
+
+% use appendices with more than one appendix
+% then use \section to start each appendix
+% you must declare a \section before using any
+% \subsection or using \label (\appendices by itself
+% starts a section numbered zero.)
+%
+
+
+\appendices
+\section{}
+Appendix one text goes here.
+
+\section{}
+Appendix two text goes here.
+
+
+% use section* for acknowledgement
+\section*{Acknowledgment}
+
+
+The authors would like to thank...
+
+
+% Can use something like this to put references on a page
+% by themselves when using endfloat and the captionsoff option.
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+\bibliographystyle{IEEEtran}
+\bibliography{D:/pb404/Dropbox/PhD/OTbib}
+
+% biography section
+% 
+% If you have an EPS/PDF photo (graphicx package needed) extra braces are
+% needed around the contents of the optional argument to biography to prevent
+% the LaTeX parser from getting confused when it sees the complicated
+% \includegraphics command within an optional argument. (You could create
+% your own custom macro containing the \includegraphics command to make things
+% simpler here.)
+%\begin{biography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
+% or if you just want to reserve a space for a photo:
+
+\begin{IEEEbiographynophoto}{Pete Bunch}
+Biography text here.
+\end{IEEEbiographynophoto}
+
+% if you will not have a photo at all:
+\begin{IEEEbiographynophoto}{Simon Godsill}
+Biography text here.
+\end{IEEEbiographynophoto}
+
+% insert where needed to balance the two columns on the last page with
+% biographies
+%\newpage
+
+% You can push biographies down or up by placing
+% a \vfill before or after them. The appropriate
+% use of \vfill depends on what kind of text is
+% on the last page and whether or not the columns
+% are being equalized.
+
+%\vfill
+
+% Can be used to pull up biographies so that the bottom of the last one
+% is flush with the other column.
+%\enlargethispage{-5in}
+
+
+
+% that's all folks
+\end{document}
+
+
