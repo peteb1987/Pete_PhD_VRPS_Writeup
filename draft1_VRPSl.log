@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdflatex 2012.1.9)  6 FEB 2012 14:49
+This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdflatex 2012.1.9)  7 FEB 2012 16:01
 entering extended mode
 **D:/pb404/VariableRateAlgorithms/VRPS_Paper/draft1_VRPSl.tex
 (D:/pb404/VariableRateAlgorithms/VRPS_Paper/draft1_VRPSl.tex
@@ -189,6 +189,13 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
 LaTeX Info: Redefining \[ on input line 2666.
 LaTeX Info: Redefining \] on input line 2667.
 )
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty"
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\algorithms\algorithmic.sty"
 Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
 
@@ -286,18 +293,18 @@ File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 Package color Info: Driver file: pdftex.def on input line 130.
 )
 (D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft1_VRPSl.aux)
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
-LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -314,66 +321,213 @@ LaTeX Font Info:    ... okay on input line 35.
 )
 Package caption Info: Begin \AtBeginDocument code.
 Package caption3 Info: subfig package 1.2 or 1.3 is loaded.
-LaTeX Info: Redefining \subref on input line 35.
+LaTeX Info: Redefining \subref on input line 36.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 50.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 51.
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <8> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 50.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 51.
 
 
-LaTeX Warning: Reference `' on page 1 undefined on input line 70.
+LaTeX Warning: Citation `Gordon1993' on page 1 undefined on input line 67.
 
 
-LaTeX Warning: Reference `' on page 1 undefined on input line 70.
+LaTeX Warning: Citation `Doucet2000a' on page 1 undefined on input line 67.
 
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 76.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 76.
-[1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
+
+LaTeX Warning: Citation `Godsill2004' on page 1 undefined on input line 67.
+
+
+LaTeX Warning: Citation `Cappe2007' on page 1 undefined on input line 67.
+
+
+LaTeX Warning: Citation `Doucet2009' on page 1 undefined on input line 67.
+
+
+LaTeX Warning: Citation `Li2003' on page 1 undefined on input line 69.
+
+
+LaTeX Warning: Citation `Godsill2004a' on page 1 undefined on input line 69.
+
+
+LaTeX Warning: Citation `Godsill2007a' on page 1 undefined on input line 69.
+
+
+LaTeX Warning: Citation `Godsill2007' on page 1 undefined on input line 69.
+
+
+LaTeX Warning: Citation `Gilks2001' on page 1 undefined on input line 71.
+
+
+LaTeX Warning: Reference `' on page 1 undefined on input line 71.
+
+
+LaTeX Warning: Citation `Godsill2007a' on page 1 undefined on input line 71.
+
+
+LaTeX Warning: Citation `Godsill2007' on page 1 undefined on input line 71.
+
+
+LaTeX Warning: Reference `' on page 1 undefined on input line 71.
+
+
+Underfull \hbox (badness 3492) in paragraph at lines 71--72
+[]\OT1/ptm/m/n/10 In this pa-per we re-view the VRPF for piecewise-
+ []
+
+LaTeX Font Info:    Try loading font information for U+msa on input line 77.
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 77.
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+)
+LaTeX Font Info:    Try loading font information for U+euf on input line 88.
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\ueuf.fd"
+File: ueuf.fd 2009/06/22 v3.00 Euler Fraktur
+) [1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
 ]
+
+LaTeX Warning: Citation `Godsill2004a' on page 2 undefined on input line 115.
+
+
+LaTeX Warning: Citation `Godsill2007a' on page 2 undefined on input line 115.
+
+
+LaTeX Warning: Citation `Godsill2007' on page 2 undefined on input line 115.
+
+
+Overfull \hbox (61.86473pt too wide) in alignment at lines 141--145
+ [] [] [] [][]
+ []
+
+
+Overfull \hbox (45.22815pt too wide) in alignment at lines 151--154
+ [] [] [] [][]
+ []
+
+
+LaTeX Warning: Citation `Gordon1993' on page 2 undefined on input line 156.
+
+
+LaTeX Warning: Citation `Godsill2007' on page 2 undefined on input line 158.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 172--173
+[] []\OT1/ptm/m/n/10 Sample a his-tory $\OMS/cmsy/m/n/10 f\OML/cmm/m/it/10 [];
+ x[]\OMS/cmsy/m/n/10 g 
+ []
+
+[2]
+
+LaTeX Warning: Citation `Gilks2001' on page 3 undefined on input line 190.
+
+
+LaTeX Warning: Citation `Metropolis1953' on page 3 undefined on input line 192.
+
+
+
+LaTeX Warning: Citation `Gilks1996' on page 3 undefined on input line 192.
+
+
+Overfull \hbox (14.05315pt too wide) in alignment at lines 194--198
+ [] [] [] [][]
+ []
+
+
+LaTeX Warning: Citation `Green1995' on page 3 undefined on input line 202.
+
+
+LaTeX Warning: Citation `Godsill2004' on page 3 undefined on input line 208.
+
+
+LaTeX Warning: Citation `Godsill2004' on page 3 undefined on input line 210.
+
+
+LaTeX Warning: Citation `Bunch2012' on page 3 undefined on input line 210.
+
+
+LaTeX Warning: Reference `eq:state_invert' on page 3 undefined on input line 21
+8.
+
+
+Overfull \hbox (42.6pt too wide) in alignment at lines 222--227
+ [] [] [] [][]
+ []
+
+[3]
+Overfull \hbox (107.79633pt too wide) in alignment at lines 243--247
+ [] [] [] [][]
+ []
+
+
+LaTeX Warning: Reference `alg:MCMC-VRPS' on page 4 undefined on input line 263.
+
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 268--269
+[] []\OT1/ptm/m/n/10 Initialise sam-pler with $\OMS/cmsy/m/n/10 f[]\OML/cmm/m/i
+t/10 ; []\OMS/cmsy/m/n/10 g[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 272--273
+[] []\OT1/ptm/m/n/10 Create a new com-plete state tra-jec-tory,
+ []
+
+
+LaTeX Warning: Reference `eq:MCMC-VRPS_AP' on page 4 undefined on input line 27
+3.
+
 (D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft1_VRPSl.bbl
 Underfull \hbox (badness 4072) in paragraph at lines 25--28
 []\OT1/ptm/m/n/8 N. Gor-don, D. Salmond, and A. Smith, ``Novel ap-proach to
  []
 
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 34.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 34.
-) [2] (D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft1_VRPSl.aux)
+[4]) [5
+
+] (D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft1_VRPSl.aux)
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 3683 strings out of 494019
- 54783 string characters out of 3143883
- 126044 words of memory out of 3000000
- 6937 multiletter control sequences out of 15000+200000
- 41403 words of font info for 75 fonts, out of 3000000 for 9000
+ 3825 strings out of 494019
+ 56712 string characters out of 3143883
+ 131467 words of memory out of 3000000
+ 7054 multiletter control sequences out of 15000+200000
+ 46695 words of font info for 95 fonts, out of 3000000 for 9000
  717 hyphenation exceptions out of 8191
- 36i,6n,38p,803b,335s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,13n,38p,1281b,482s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Progra
-m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program 
-Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Fil
-es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files 
-(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86
-)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/
-MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
-type1/urw/times/utmbi8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/
-times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmri
-8a.pfb>
-Output written on draft1_VRPSl.pdf (2 pages, 128958 bytes).
+m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program 
+Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Fi
+les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files
+ (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x
+86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files (x86)/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.
+9/fonts/type1/public/amsfonts/cm/cmsy5.pfb><C:/Program Files (x86)/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/t
+ype1/public/amsfonts/euler/eufm10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
+type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/t
+imes/utmbi8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8
+a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
+Output written on draft1_VRPSl.pdf (5 pages, 204011 bytes).
 PDF statistics:
- 54 PDF objects out of 1000 (max. 8388607)
+ 83 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

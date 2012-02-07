@@ -88,4 +88,17 @@ W.~R. Gilks and C.~Berzuini, ``Following a moving target-{Monte Carlo}
   \url{http://dx.doi.org/10.1111/1467-9868.00280}
 \BIBentrySTDinterwordspacing
 
+\bibitem{Metropolis1953}
+N.~Metropolis, A.~Rosenbluth, M.~Rosenbluth, A.~Teller, and E.~Teller,
+  ``Equation of state calculations by fast computing machines,'' \emph{The
+  journal of chemical physics}, vol.~21, no.~6, p. 1087, 1953.
+
+\bibitem{Gilks1996}
+W.~Gilks, S.~Richardson, and D.~Spiegelhalter, \emph{Markov chain Monte Carlo
+  in practice}.\hskip 1em plus 0.5em minus 0.4em\relax Chapman and Hall, 1996.
+
+\bibitem{Green1995}
+P.~Green, ``Reversible jump {Markov chain Monte Carlo} computation and bayesian
+  model determination,'' \emph{Biometrika}, vol.~82, no.~4, p. 711, 1995.
+
 \end{thebibliography}

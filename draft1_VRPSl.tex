@@ -17,6 +17,7 @@
   \DeclareGraphicsExtensions{.eps}
 \fi
 \usepackage[cmex10]{amsmath}
+\usepackage{amsfonts}
 \usepackage{algorithmic}
 \usepackage{array}
 \usepackage{mdwmath}
@@ -61,65 +62,229 @@ The abstract goes here.
 
 \section{Introduction}
 
-\IEEEPARstart{C}{onventional} sequential state-space inference methods use discrete-time hidden Markov models to estimate an unkown quantity evolving over time. These models may be developed by discretisation of a continuous-time model, or by formulation directly in discrete time. In either case, it is common practice to use a grid of time points synchronous with the observations. Such ``fixed rate'' models may give poor representations of processes which exhibit structured behaviour over longer time scales. In such cases, a ``variable rate'' model may prove advantageous - the model is discretised onto a set of set of random times, which characterise the transitions in system behaviour.
+\IEEEPARstart{C}{onventional} sequential state-space inference methods use discrete-time hidden Markov models to estimate an unknown quantity evolving over time. These models may be developed by discretisation of a continuous-time model, or by formulation directly in discrete time. In either case, it is common practice to use a grid of time points synchronous with the observations. Such ``fixed rate'' models may give poor representations of processes which exhibit structured behaviour over longer time scales. In such cases, a ``variable rate'' model may prove advantageous - the model is discretised onto a set of set of random times, which characterise the transitions in system behaviour.
 
 Using a variable rate model, it is necessary to estimate both the set of changepoints and the (nonlinearly) evolving state. This is not analytically tractable so numerical approximations must be employed. The particle filter (introduced by \cite{Gordon1993}) and smoother (see \cite{Doucet2000a,Godsill2004}) are such schemes which approximate the posterior state distribution using a set of samples, or ``particles'', drawn sequentially from it.  A thorough introduction to particle filtering and smoothing methods can be found in \cite{Cappe2007,Doucet2009}.
 
 Target tracking algorithms are commonly based upon fixed rate models (see, e.g. \cite{Li2003} for a thorough survey), in which the target kinematics (position, velocity, etc.) are estimated at a set of fixed times at which observations (e.g. radar measurements) are made. In \cite{Godsill2004a,Godsill2007a,Godsill2007}, variable rate models were introduced for tracking, in which the state trajectory is divided up by a set of changepoints between which the motion follows a deterministic path governed by kinematic parameters (accelerations, etc.) which are fixed for that segment. The changepoint times and segment parameters may be estimated using a numerical approximation called the variable rate particle filter (VRPF).
 
-In this paper we review the VRPF and introduce improvements using the resample-move method of \cite{Gilks2001}. We then describe a new variable rate particle smoother (VRPS) algorithm, which uses a novel Markov Chain Monte Carlo (MCMC) formulation to circumvent difficulties of the conventional methods. In section~\ref{}, we adapt the intrinsic-coordinate models of \cite{Godsill2007a,Godsill2007} for use with the new smoothing algorithm. Simulations are presented in section~\ref{}.
+In this paper we review the VRPF for piecewise-deterministic nonlinear models and introduce improvements using the resample-move method of \cite{Gilks2001}. We then describe a new variable rate particle smoother (VRPS) algorithm, which uses a novel Markov Chain Monte Carlo (MCMC) formulation to circumvent difficulties of the conventional methods. In section~\ref{}, we adapt the intrinsic-coordinate models of \cite{Godsill2007a,Godsill2007} for use with the new smoothing algorithm. Simulations are presented in section~\ref{}.
 
 
 
-\section{Variable Rate Models}
+\section{Piecewise-Deterministic Variable Rate Models}
 
-We consider a general model from time $0$ to $T$, between which observations, $\{y_1 \dots y_N\}$, are made at times $\{t_1 \dots t_N\}$. During this period, an unknown number, $K$, of changepoints occur at times $\{ \tau_1 \dots \tau_K \}$, each with associated motion parameters, $\{ w_1 \dots w_K \}$. Discrete sets containing multiple values over time will be written as, e.g. $y_{1:n} = \{y_1 \dots y_n\}$.
+We consider a general model from time $0$ to $T$, between which observations, $\{y_1 \dots y_N\}$, are made at times $\{t_1 \dots t_N\}$. During this period, an unknown number, $K$, of changepoints occur at times $\{ \tau_1 \dots \tau_K \}$. Discrete sets containing multiple values over time will be written as, e.g. $y_{1:n} = \{y_1 \dots y_n\}$.
 
-Changepoints are treated as random variables, dependent on the previous sequence of times.
-
-\begin{IEEEeqnarray}{rCl}
- \tau_{k} & \sim & p(\tau_{k}|\tau_{1:k-1})
-\end{IEEEeqnarray}
-
-In continuous time, the dynamics of the latent state, $x(t)$, may be written as a differential equation.
+Changepoints are treated as random variables, dependent on the previous times. The sequence it assumed to be Markovian throughout this paper.
 
 \begin{IEEEeqnarray}{rCl}
- dx(t) & = & g(x(t), w(t), \tau_{1:k})dt
+ \tau_{k} & \sim & p(\tau_{k}|\tau_{k-1})   \label{eq:cp_model}
 \end{IEEEeqnarray}
 
-The dynamics are thus dependent on the sequence of changepoints which have occured so far, $\tau_{1:k}$, and a continuously varying random innovation, $w(t)$. Such a system may be discretised by assuming that this random innovation is constant between changepoints. This yields an equivalent discrete time system represented by a difference equation, in which the state at time $\tau_k$ is written as $x_k$.
+In continuous time, the dynamics of the latent state, $x(t)$, may be written as a differential equation dependent on the sequence of changepoints which have occured so far, $\tau_{1:k}$ (i.e. $\tau_k < t < \tau_{k+1}$).
 
 \begin{IEEEeqnarray}{rCl}
- x_k & = & f(x_{k-1}, w_{k-1}, \tau_{1:k})
+ dx(t) & = & \mathfrak{f}(x(t), v(t), \tau_{1:k})dt \label{eq:cont_time_state_diff_eq}
 \end{IEEEeqnarray}
 
-In order to calculate measurement likelihoods, it is also necessary to estimate the latent state at the time of the observations, $t_n$. Once $\tau_{k-1}$, $x_{k-1}$ and $w_{k-1}$ have been estimated, this may be calculated deterministically using the same state equation. The state at time $t_n$ at which the $n$th observation is made is denoted $\hat{x}_n$.
+The dynamics depend on the changepoint sequence, $\tau_{1:k}$, and a continuously varying random innovation, $v(t)$. For the variable rate models considered in this paper, this stochastic differential equation will be solved by assuming that the random innovation is constant between changepoints, $v(t) = v_k \forall \tau_k < t < \tau_{k+1}$. This means that the state trajectory is a piecewise-deterministic function dependent on the changepoint times and innovations.
+
+\begin{IEEEeqnarray}{rCll}
+ x(t) & = & f(x_{k-1}, v_{k-1}, \tau_{1:k-1}, t) &, \tau_{k-1} < t < \tau_k    \label{eq:disc_time_state_diff_eq}
+\end{IEEEeqnarray}
+
+The innovations may be treated as random variables dependent on the previous values. This sequence will also be assumed to be Markovian throughout this paper.
 
 \begin{IEEEeqnarray}{rCl}
- \hat{x}_n & = & f(x_{k-1}, w_{k-1}, \tau_{1:k-1}, t_n)
+ v_{k} & \sim & p(v_{k}|v_{k-1})   \label{eq:innov_model}
 \end{IEEEeqnarray}
 
-To keep the following derivations concise, we introduce an additional variable for each changepoint-parameter pair $\theta_k = \{\tau_k, x_k, w_k\}$.
+Once the next changepoint time is known, (\ref{eq:disc_time_state_diff_eq}) may be used to calculate the state at this changepoint, $x_k = x(\tau_k)$. In addition, the state at the observation times will be given by $\hat{x}_n = x(t_n)$, which is need to evaluate measurement likelihoods.
 
-It will be desirable to denote the set of changepoints and parameters (of unspecified size) which occur within some range of time. This will be written as $\theta_{[s,t]} = \{ \theta_k \forall k : s<\theta_k<t \}$. Note that such a variable not only conveys where changepoints occur, but also where they do not within the specfied range.
+To keep the following derivations concise, an additional variable is introduced to denote each changepoint time-innovation pair $\theta_k = \{\tau_k, v_k\}$.
 
-\begin{itemize}
-	\item Notation for variable rate models
-	\item Basic p-d model
-\end{itemize}
+It will be useful to denote the set of changepoints and parameters (of unspecified size) which occur within some range of time. This will be written as $\theta_{[s,t]} = \{ \theta_k \forall k : s<\theta_k<t \}$. This notation may also be thought of as representing the number, $k$, of changepoints within the interval, plus the times and innovations of each changepoint. Note that such a variable not only conveys where changepoints occur, but also where they do not within the specfied range.
 
 
 
 \section{The Variable Rate Particle Filter}
 
-\begin{itemize}
-	\item Basic filter
-	\item Improved performance using RM and UKF
-\end{itemize}
+The objective of an inference algorithm will be to estimate the sequence of changepoint times, $\tau_{[0,t_n]}$ and the state trajectory, $x(t) \forall t<t_n$, given some set of the observations, $y_{1:n}$. The state may be calculated deterministically using (\ref{eq:disc_time_state_diff_eq}) once the time and innovation sequences, $\theta_{[0,t_n]}$, are known (plus the initial state, $x_0$).
+
+In \cite{Godsill2004a,Godsill2007a,Godsill2007}, the variable rate particle filter (VRPF) was introduced for performing this inference sequentially. At time $t_n$, the filter produces a particle approximation to the posterior changepoint distribution.
+
+\begin{IEEEeqnarray}{rCl}
+ \IEEEeqnarraymulticol{3}{L}{p(\theta_{[0,t_n]}, x_0|y_{1:n})} \nonumber \\
+ & = & \frac{ p(y_n|\theta_{[0,t_n]}, x_0, y_{1:n-1}) p(\theta_{[0,t_n]}, x_0|y_{1:n-1}) }{ p(y_n|y_{1:n-1}) } \nonumber \\
+ & = & \frac{ p(y_n|\hat{x}_n) p(\theta_{[t_{n-1},t_n]}|\theta_{[0,t_{n-1}]}) p(\theta_{[0,t_{n-1}]}, x_0|y_{1:n-1}) }{ p(y_n|y_{1:n-1}) }
+\end{IEEEeqnarray}
+
+This distribution cannot be calculated analytically, but may be approximated numerically.
+
+A particle filter is an algorithm for approximating a probability distribution using a set of weighted samples (or ``particles'') drawn from that distribution. In this case, each particle will be a set of changepoint times and innovations (plus an initial state).
+
+\begin{equation}
+ \hat{p}(\theta_{[0,t_n]}, x_0|y_{1:n}) = \sum_j w_n^{(j)} \delta_{(\theta_{[0,t_n]}^{(j)}, x_0^{(j)})}(\theta_{[0,t_n]}, x_0)
+\end{equation}
+
+where $\delta_x(X)$ is a probability mass at the point where $X=x$.
+
+The particle filter works recursively. At the $(n)th$ step, a particle, $\theta_{[0,t_{n-1}]}^{(i)}$, is first resampled from those approximating the filtering distribution at the $(n-1)th$ step, using an arbitrary set of proposal weights.
+
+\begin{equation}
+ q(\theta_{[0,t_n]}, x_0|y_{1:n}) = \sum_j \beta_n^{(j)} \delta_{(\theta_{[0,t_n]}^{(j)}, x_0^{(j)})}(\theta_{[0,t_n]}, x_0)
+\end{equation}
+
+An extension, $\theta_{[t_{n-1},t_n]}^{(i)}$, is then proposed from an importance distribution, $q(\theta_{[t_{n-1},t_n]}|\theta_{[0,t_{n-1}]}^{(i)}, y_n)$. Finally, the particle is weighted according to the ratio of the target distribution and the proposal.
+
+\begin{IEEEeqnarray}{rCl}
+w_n^{(i)} & = & \frac{ p(\theta_{[0,t_n]}^{(i)}, x_0^{(i)}|y_{1:n}) }{ q(\theta_{[0,t_{n-1}]}^{(i)}, x_0^{(i)}|y_{1:{n-1}}) q(\theta_{[t_{n-1},t_{n}]}^{(i)}|\theta_{[0,t_{n-1}]}^{(i)},) } \nonumber \\
+    & \propto & \frac{ p(y_{n}|\theta_{[0,t_n]}^{(i)}, x_0^{(i)}, y_{1:n-1}) p(\theta_{[t_{n-1},t_n]}^{(i)}|\theta_{[0,t_{n-1}]}^{(i)}) p(\theta_{[0,t_{n-1}]}^{(i)}, x_0^{(i)}|y_{1:n-1}) }{ q(\theta_{[0,t_{n-1}]}^{(i)}, x_0^{(i)}|y_{1:{n-1}}) q(\theta_{[t_{n-1},t_{n}]}^{(i)}|\theta_{[0,t_{n-1}]}^{(i)}, y_n) } \nonumber \\
+    & \approx & \frac{w_{n-1}^{(i)}}{\beta_{n-1}^{(i)}} \times \frac{ p(y_{n}|\hat{x}_n) p(\theta_{[t_{n-1},t_n]}^{(i)}|\theta_{[0,t_{n-1}]}^{(i)}) }{ q(\theta_{[t_{n-1},t_{n}]}^{(i)}|\theta_{[0,t_{n-1}]}^{(i)}, y_n) } \label{eq:VRPF_weights}
+\end{IEEEeqnarray}
+
+The normalisation may be enforced by scaling the weights so that they sum to $1$.
+
+The first term of (\ref{eq:VRPF_weights}) is simply an observation likelihood of the deterministically calculated state. The second term is a transition density, the form of which depends on whether or not a new changepoint occurs within the interval $[t_{n-1},t_n]$. Assume that $k$ changepoints have already been estimated in the interval $[0,t_{n-1}]$. If a new changepoint occurs, the probability of the new random variable, $v_{k+1}$, must be included.
+
+\begin{IEEEeqnarray}{rCl}
+ \IEEEeqnarraymulticol{3}{l}{p(\theta_{[t_{n-1},t_n]}|\theta_{[0,t_{n-1}]})} \nonumber \\
+ & = & \begin{cases} p(\tau_{k+1}|\tau_{k}, \tau_{k+1}>t_{n-1}) p(\tau_{k+2}>t_n|\tau_{k+1}) p(v_{k+1}|v_{k}) & \tau_{k+1}<t_n \\ p(\tau_{k+1}>t_n|\tau_{1:k}, \tau_{k+1}>t_{n-1}) & \tau_{k+1}>t_n \end{cases}
+\end{IEEEeqnarray}
+
+This can be calculated from transition models for $\tau_k$ and $v_k$ specified by (\ref{eq:cp_model}) and (\ref{eq:innov_model}). For the most basic ``bootstrap'' \cite{Gordon1993} form of VRPF, this transition density may be used as the importance distribution, leading to the usual simplification in the weight formula.
+
+The choice of proposal weights, $\{\beta_{n-1}^{(i)}\}$, requires particular attention in the design of VRPFs. In some models a changepoint may not have an immediate effect on the observations, especially if a jump occurs in some quantity which is only observed via its integral, e.g. if there is a jump in the acceleration of a moving object, yet only the position is measured, the change will not be apparent until several more observations have been made. In the meantime, particles which contain a changepoint at the correct time may all have been removed by the resampling process. A particle pays a debt in transition probability when a changepoint is proposed, and does not see it repaid in likelihood until later. To avoid this loss of good particles, proposal weights should be chosen which preserve a significant number of low-weight particles. One scheme which has been found to work well is described in \cite{Godsill2007}, in which proposal weights are given by:
+
+\begin{IEEEeqnarray}{rCl}
+\beta_{n-1}^{(i)} & \propto & \max ( 1, N_F w_{n-1}^{(i)} )
+\end{IEEEeqnarray}
+
+where $N_F$ is the number of filtering particles. The VRPF is summarised below.% in algorithm~\ref{alg:VRPF}.
+
+%\begin{algorithm}
+\begin{algorithmic}
+\STATE Initialise particles $\{\theta_{[0,0]}^{(i)}\} \gets \emptyset$.
+\STATE Sample starting state prior, $\{x_0^{(i)}\} \sim p(x_0)$
+\FOR{$n=1 \dots N$}
+  \FOR{$i=1 \dots N_F$}
+  	\STATE Sample a history $\{\theta_{[0,t_{n-1}]}^{(i)}, x_0^{(i)}\} \sim \sum_j v_n^{(j)} \delta_{(\theta_{[0,t_n]}^{(j)}, x_0^{(j)})}(\theta_{[0,t_n]}, x_0)$.
+    \STATE Propose $\theta_{[t_{n-1},t_n]}^{(i)} \sim q(\theta_{[t_{n-1},t_n]}|\theta_{[0,t_{n-1}]}^{(i)}, y_{n})$
+    \STATE Calculate $\hat{x}_n$ using (\ref{eq:disc_time_state_diff_eq}).
+    \STATE Weight $w_n^{(i)} \propto \frac{w_{n-1}^{(i)}}{\beta_{n-1}^{(i)}} \times \frac{ p(y_{n}|\hat{x}_n) p(\theta_{[t_{n-1},t_n]}^{(i)}|\theta_{[0,t_{n-1}]}^{(i)}) }{ q(\theta_{[t_{n-1},t_{n}]}^{(i)}|\theta_{[0,t_{n-1}]}^{(i)}, y_n) }$
+  \ENDFOR
+  \STATE Scale weights such that $\sum_i w_n^{(i)}=1$
+\ENDFOR
+\end{algorithmic}
+%\label{alg:RBVRPF}
+%\caption{Rao-Blackwellised Variable Rate Particle Filter}
+%\end{algorithm}
+
+
+
+\subsection{Improved VRPF Using Resample-Move}
+
+The weakness of the ordinary VRPF is that it is very difficult to spot changepoints until after they have actually happened. In the basic filter, changepoints can only be added between the previous and current observation times, $t_{n-1}$ and $t_n$. It is necessary to have a very large number of particles in order to ensure that some propose changepoints in the correct areas.
+
+The filter performance can be greatly improved by the addition of resample-move steps \cite{Gilks2001} to adjust the time of previous changepoints, $\tau_{1:k}$ and innovations, $v_{1:k}$. Here we consider altering only the most recent values.
+
+In a resample-move scheme, Metropolis-Hastings (MH) \cite{Metropolis1953,Gilks1996} steps are included after resampling to regenerate the particle distribution. A proposal is made to change one or more of the previous states, and accepted with a probability that depends on the ratio of target and proposal distribution probabilities. Here, we propose a new value for the most recent changepoint time and the corresponding innovation, $\theta_k^* \sim q(\theta_k|\theta_{1:k-1}, y_{1:n})$, which are used to replace the current values, $\theta_k^{(i)}$, to construct a new changepoint sequence, $\theta_{[0,t_n]}^*$. Thus, the changepoint times and innovations may be changed many frames after they were first proposed, when more informative observations are available. The acceptance probability for such a MH move is the following ratio.
+
+\begin{IEEEeqnarray}{rCl}
+ \alpha & = & \frac{ p(\theta_{[0,t_n]}^*, x_0|y_{1:n}) q(\theta_k^{(i)}|\theta_{1:k-1}, y_{1:n}) }{ p(\theta_{[0,t_n]}^{(i)}, x_0|y_{1:n}) q(\theta_k^*|\theta_{1:k-1}, y_{1:n}) } \\
+        & = & \frac{ p(y_{s_k:n}|\theta_{[0,t_n]}^*, x_0) p(\theta_{[t_{s_k-1},t_n]}^*|\theta_{[0,t_{s_k-1}]}) q(\theta_k^*|\theta_{1:k-1}, y_{1:n}) }{ p(y_{s_k:n}|\theta_{[0,t_n]}^{(i)}, x_0) p(\theta_{[t_{s_k-1},t_n]}^{(i)}|\theta_{[0,t_{s_k-1}]}) q(\theta_k^{(i)}|\theta_{1:k-1}, y_{1:n}) } \\
+        & = & \frac{ p(y_{s_k:n}|\hat{x}_{s_k:n}^*) p(\theta_{k}^*|\theta_{1:k-1}) q(\theta_k^*|\theta_{1:k-1}, y_{1:n}) }{ p(y_{s_k:n}|\hat{x}_{s_k:n}^{(i)}) p(\theta_{k}^{(i)}|\theta_{1:k-1}) q(\theta_k^{(i)}|\theta_{1:k-1}, y_{1:n}) }
+\end{IEEEeqnarray}
+
+Here, $s_k$ is the index of the earliest observation to come after either $\tau_k$ or $\tau_k^*$ (Thus $y_{s_k:n}$ simply means ``all the observations affected by the proposed move''.).
+
+In addition, simpler moves can be conducted in which only $v_k$ is changed, or more complex moves in which multiple past changepoints are altered. The computational complexity for such moves is likely to be high, however, because of the large number of likelihood evaluations to be made. It is also possible to included reversible jump moves \cite{Green1995} to add or remove changepoints entirely.
 
 
 
 \section{The Variable Rate Particles Smoother}
+
+A filter conducts inference sequentially as new observations are introduced. The purpose of a smoother is to produce a second estimate once all the observations have been made, using future values to improve upon the filter performance. For ordinary fixed rate models, a particle approximation of the joint smoothing distribution may be constructed by resampling values from the filter approximations backwards through time \cite{Godsill2004}.
+
+Formulating an effective smoother for piecewise deterministic variable rate models proves to be a challenging task, because changing an estimate of the innovations or the state in the past will change the state, and thus the observation likelihood, in the future. This obstacle prevents the use of direct backward sampling smoothers, such as that of \cite{Godsill2004}, for which an intractable integral would be required in the weight calculations. In this section, a smoother which uses MCMC to sample the changepoint history is developed, using similar principles to \cite{Bunch2012}.
+
+In the derivation of the VRPF, the filter targetted the joint distribution over changepoint times, $\tau_{[0,t_n]}$, and innovations, $v_{[0,t_n]}$. This was desirable because once these sequences have been estimated, the state can be calculated deterministically for all times up to $t_n$, an essential property for measurement likelihood evaluations. For a smoother, such a scheme is problematic because changing one of the innovations at an early time will alter the state at all subsequent times. Instead, the sequence of innovations, $v_{[0,T]}$, is replaced by the sequence of states occuring at the changepoint times, $x_{[0,T]} = \{ x(\tau_k) \forall k \}$, which may be calculated deterministically from the innovation and changepoint sequences. Targetting a distribution over the state sequence, if a change is made to $x_k$, it is no longer necessary for the rest of the states to change, only to alter the preceeding and following innovations, $v_{k-1}$ and $v_{k}$. For such a scheme to be workable, it must be possible to calculate an innovation from the states and times of the bounding changepoints. In other words, (\ref{eq:disc_time_state_diff_eq}) must be ``invertible''.
+
+\begin{IEEEeqnarray}{rCl}
+ v_k & = & f^{-1}(x_{k-1}, x_k, \tau_{k-1}, \tau_{k})  \label{eq:state_invert}
+\end{IEEEeqnarray}
+
+Analagously with $\theta$, a new variable is introduced to represent changepoint time-state pairs, $\zeta_k = \{\tau_k, x_k\}$. Thus if $\zeta_{0:K}$ is known, it is possible to calculate the innovation sequence using (\ref{eq:state_invert}) and thence to calculate the state any time. Thus, for piecewise-deterministic variable rate models, the posterior distribution targetted by a smoother is $p(\zeta_{[0,T]}|y_{1:N})$.
+
+\begin{meta} Say something about getting this as the final filtering distribution, but that this is degenerate. \end{meta}
+
+\begin{IEEEeqnarray}{rCl}
+ \IEEEeqnarraymulticol{3}{l}{p(\zeta_{[0,T]}|y_{1:N})} \nonumber \\
+\qquad & = & \frac{ p(y_{1:N}|\zeta_{[0,T]}) p(\zeta_{[0,T]}) }{ p(y_{1:N}) } \\
+       & = & \frac{1}{p(y_{1:N})} \times p(\zeta_{[t_n,T]}|\zeta_{[0,t_n]}) p(\zeta_{[0,t_n]}) \nonumber \\
+       &   &  \times p(y_{r_k^+ +1:N}|\hat{x}_{r_k^+ +1:N}) p(y_{r_k^-:r_k^+}|\hat{x}_{r_k^-:r_k^+}) p(y_{1:r_k^- -1}|\hat{x}_{1:r_k^- -1})  \IEEEeqnarraynumspace
+\end{IEEEeqnarray}
+
+The likelihood term has been split up into three parts, divided at $r_k^-$ and $r_k^+$, the earliest and latest observations to occur between the successive changepoints $\tau_k$ and $\tau_{k+1}$, which lie each side of the observation index $n$.
+
+Particles may be 
+
+
+
+The Markov chain is initialised by sampling from the final filtering distribution. At the $n^{\text{th}}$ processing step, MH moves are conducted by proposing a new past for the state and changepoint sequences, $\{ \tau^*_{[0,t_n]}, x^*_{[0,t_n]} \}$, from the particles of the $n^{\text{th}}$ filtering approximation, to replace those of the current values, $\{ \tilde{\tau}_{[0,T]}, \tilde{x}_{[0,T]} \}$. The proposal distribution will be written:
+
+\begin{IEEEeqnarray}{rCl}
+ q(\{\tau,x\}_{[0,t_n]}) = \sum_{i} V_n^{(i)} \delta_{\{\tau,x\}_{[0,t_n]}^{(i)}}(\{\tau,x\}_{[0,t_n]})
+\end{IEEEeqnarray}
+
+where $V_n^{(i)}$ are arbitary proposal weights, and the acceptance probability is given by:
+
+\begin{IEEEeqnarray}{rCl}
+ \alpha %& = & \frac{ P(y_{r_k^+ +1:N}|\tilde{x}_{[t_n,T]}) P(y_{r_k^-:r_k^+}|x^*_{[0,t_n]}, \tilde{x}_{[t_n,T]}) P(y_{1:r_k^- -1}|x^*_{[0,t_n]}) P(\tilde{x}_{[t_n,T]}|x^*_{[0,t_n]}) P(x^*_{[0,t_n]}) q(x_{[0,t_n]}|\tilde{x}_{[t_n,T]}, y_{1:N}) }{ P(y_{r_k^+ +1:N}|\tilde{x}_{[t_n,T]}) P(y_{r_k^-:r_k^+}|x_{[0,t_n]}, \tilde{x}_{[t_n,T]}) P(y_{1:r_k^- -1}|x_{[0,t_n]}) P(x_{[t_n,T]}|x_{[0,t_n]}) P(x_{[0,t_n]}) q(x^*_{[0,t_n]}|\tilde{x}_{[t_n,T]}, y_{1:N}) } \nonumber \\
+& = & \frac{ P(y_{1:r_k^- -1}|\{\tau^*,x^*\}_{[0,t_n]}) }{ P(y_{1:r_k^- -1}|\{\tau,x\}_{[0,t_n]}) } \times \frac{ P(\{\tau^*,x^*\}_{[0,t_n]}) }{ P(\{\tau,x\}_{[0,t_n]}) } \nonumber \\ 
+&   & \times \frac{ P(y_{r_k^-:r_k^+}|\{\tau^*,x^*\}_{[0,t_n]}, \{\tilde{\tau},\tilde{x}\}_{[t_n,T]}) }{ P(y_{r_k^-:r_k^+}|\{\tau,x\}_{[0,t_n]}, \{\tilde{\tau},\tilde{x}\}_{[t_n,T]}) } \times \frac{ P(\{\tilde{\tau},\tilde{x}\}_{[t_n,T]}|\{\tau^*,x^*\}_{[0,t_n]}) }{ P(\{\tilde{\tau},\tilde{x}\}_{[t_n,T]}|\{\tau,x\}_{[0,t_n]}) } \times \frac{ V_n }{ V_n^* } \IEEEeqnarraynumspace \label{eq:MCMC-VRPS_AP}
+\end{IEEEeqnarray}
+
+where for notational clarity we have used
+
+\begin{IEEEeqnarray*}{rCl}
+ \{\tau,x\}_{[a,b]} &=& \{ \tau_{[a,b]}, x_{[a,b]} \}
+\end{IEEEeqnarray*}
+
+The first two terms are calculated and maybe stored during the filtering stage, so no extra calculation is required while smoothing. Note that these terms cannot be replace by the filtering approximation from frame $n$, because they only make use of the observations up to $r_k^- -1$.
+
+The third and fourth terms represent the likelihood of observations between two changepoints of known state and time, and the transition probability between these two changepoints. These may be found by calculating the required value of the random variable, $w_k$, to get from the state preceeding $t_n$, i.e. $x_k$, to that following $t_n$, i.e. $x_{k+1}$. The continuous state trajectory may then be calculated allowing the likelihood term to be evaluated. The transition density term is given by:
+
+\begin{IEEEeqnarray}{rCl}
+ P(\{\tilde{\tau},\tilde{x}\}_{[t_n,T]}|\{\tau,x\}_{[0,t_n]}) & \propto & P(\tilde{\tau}_{k+1}|\tau_{k}, \tau_{k+1}>t_n) P(w_k)
+\end{IEEEeqnarray}
+
+The MCMC variable rate particle smoother (MCMC-VRPS) is summarised in algorithm~\ref{alg:MCMC-VRPS}.
+
+%\begin{algorithm}
+ \begin{algorithmic}
+  \FOR{$s=1 \dots S$}
+    \STATE Initialise sampler with $\{\tilde{\tau},\tilde{x}\}_{[0,T]} \sim \sum_{i} W_N^{(i)} \delta_{\{\tau,x\}_{[0,T]}^{(i)}}(\{\tau,x\}_{[0,T]})$
+    \FOR{$n=N \dots 1$}
+      \FOR{$f=1 \dots F_n$}
+	\STATE Propose a new past $\{\tau^*,x^*\}_{[0,t_n]} \sim q(\{\tau,x\}_{[0,t_n]})$
+	\STATE Create a new complete state trajectory, $\{\tau^*,x^*\}_{[0,T]} = \{ \{\tau^*,x^*\}_{[0,t_n]}, \{\tilde{\tau},\tilde{x}\}_{[t_n,T]} \}$
+	\STATE Calculate $\alpha$ using equation~\ref{eq:MCMC-VRPS_AP}
+	\STATE With probability $\alpha$, $\{\tilde{\tau},\tilde{x}\}_{[0,T]} \gets \{\tau^*,x^*\}_{[0,T]}$
+      \ENDFOR
+    \ENDFOR
+    \STATE $\{\tau,x\}_{[0,T]}^{(s)} \gets \{\tilde{\tau},\tilde{x}\}_{[0,T]}$
+  \ENDFOR
+ \end{algorithmic}
+%\label{alg:MCMC-VRPS}
+%\caption{MCMC variable rate particle smoother}
+%\end{algorithm}
+
+Note that the choice of $F$ might be a small number (generally $F=1$ in the simulations later in this report).
+
+
+
 
 \begin{itemize}
 	\item Failure of ordinary backward sampling method
