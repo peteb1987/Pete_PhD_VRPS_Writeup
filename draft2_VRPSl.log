@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdflatex 2012.1.9)  9 FEB 2012 10:51
+This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=latex 2012.1.9)  9 FEB 2012 15:29
 entering extended mode
-**D:/pb404/VariableRateAlgorithms/VRPS_Paper/draft1_VRPSl.tex
-(D:/pb404/VariableRateAlgorithms/VRPS_Paper/draft1_VRPSl.tex
+**draft2_VRPSl.tex
+(D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft2_VRPSl.tex
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -28,7 +28,7 @@ LaTeX Font Info:    Try loading font information for OT1+ptm on input line 366.
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 -- Using 8.5in x 11in (letter) paper.
--- Using PDF output.
+-- Using DVI output.
 \@IEEEnormalsizeunitybaselineskip=\dimen104
 -- This is a 10 point document.
 \CLASSINFOnormalsizebaselineskip=\dimen105
@@ -99,7 +99,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 \@IEEEtranrubishbin=\box26
 ) ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
 Package: ifpdf 2010/01/28 v2.1 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in pdf mode detected.
+Package ifpdf Info: pdfTeX in pdf mode not detected.
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\cite\cite.sty"
 LaTeX Info: Redefining \cite on input line 302.
@@ -122,11 +122,10 @@ Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
 File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
-Package graphics Info: Driver file: pdftex.def on input line 91.
+Package graphics Info: Driver file: dvips.def on input line 91.
 
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
-File: pdftex.def 2010/09/14 v0.05b Graphics/color for pdfTeX
-\Gread@gobject=\count91
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\dvips.def"
+File: dvips.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
 ))
 \Gin@req@height=\dimen117
 \Gin@req@width=\dimen118
@@ -151,13 +150,13 @@ Package: amsbsy 1999/11/29 v1.2d
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\ams\math\amsopn.sty"
 Package: amsopn 1999/12/14 v2.01 operator names
 )
-\inf@bad=\count92
+\inf@bad=\count91
 LaTeX Info: Redefining \frac on input line 211.
-\uproot@=\count93
-\leftroot@=\count94
+\uproot@=\count92
+\leftroot@=\count93
 LaTeX Info: Redefining \overline on input line 307.
-\classnum@=\count95
-\DOTSCASE@=\count96
+\classnum@=\count94
+\DOTSCASE@=\count95
 LaTeX Info: Redefining \ldots on input line 379.
 LaTeX Info: Redefining \dots on input line 382.
 LaTeX Info: Redefining \cdots on input line 467.
@@ -166,15 +165,15 @@ LaTeX Info: Redefining \cdots on input line 467.
 \big@size=\dimen121
 LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
-\macc@depth=\count97
-\c@MaxMatrixCols=\count98
+\macc@depth=\count96
+\c@MaxMatrixCols=\count97
 \dotsspace@=\muskip10
-\c@parentequation=\count99
-\dspbrk@lvl=\count100
+\c@parentequation=\count98
+\dspbrk@lvl=\count99
 \tag@help=\toks17
-\row@=\count101
-\column@=\count102
-\maxfields@=\count103
+\row@=\count100
+\column@=\count101
+\maxfields@=\count102
 \andhelp@=\toks18
 \eqnshift@=\dimen122
 \alignsep@=\dimen123
@@ -202,10 +201,10 @@ Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ifthen.sty"
 Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
 )
-\c@ALC@unique=\count104
-\c@ALC@line=\count105
-\c@ALC@rem=\count106
-\c@ALC@depth=\count107
+\c@ALC@unique=\count103
+\c@ALC@line=\count104
+\c@ALC@rem=\count105
+\c@ALC@depth=\count106
 \ALC@tlm=\skip47
 \algorithmicindent=\skip48
 )
@@ -219,13 +218,13 @@ Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mdwtools\mdwmath.sty"
 Package: mdwmath 1996/04/11 1.1 Nice mathematical things
-\sq@sqrt=\count108
+\sq@sqrt=\count107
 LaTeX Info: Redefining \sqrt on input line 84.
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mdwtools\mdwtab.sty"
 Package: mdwtab 1998/04/28 1.9 Table typesetting with style
-\tab@state=\count109
-\tab@columns=\count110
+\tab@state=\count108
+\tab@columns=\count109
 \tab@preamble=\toks22
 \tab@shortline=\toks23
 \extrarowheight=\dimen130
@@ -260,17 +259,17 @@ Package: caption3 2010/01/14 v3.1m caption3 kernel (AR)
 Package caption Info: Unknown document class (or package),
 (caption)             standard defaults will be used on input line 1084.
 )
-\c@KVtest=\count111
+\c@KVtest=\count110
 \sf@farskip=\skip55
 \sf@captopadj=\dimen145
 \sf@capskip=\skip56
 \sf@nearskip=\skip57
-\c@subfigure=\count112
-\c@subfigure@save=\count113
-\c@lofdepth=\count114
-\c@subtable=\count115
-\c@subtable@save=\count116
-\c@lotdepth=\count117
+\c@subfigure=\count111
+\c@subfigure@save=\count112
+\c@lofdepth=\count113
+\c@subtable=\count114
+\c@subtable@save=\count115
+\c@lotdepth=\count116
 \sf@top=\skip58
 \sf@bottom=\skip59
 )
@@ -290,9 +289,12 @@ Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
 File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
-Package color Info: Driver file: pdftex.def on input line 130.
-)
-(D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft1_VRPSl.aux)
+Package color Info: Driver file: dvips.def on input line 130.
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\dvipsnam.def"
+File: dvipsnam.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
+))
+(D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft2_VRPSl.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
 LaTeX Font Info:    ... okay on input line 36.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
@@ -305,26 +307,13 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
 LaTeX Font Info:    ... okay on input line 36.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
 LaTeX Font Info:    ... okay on input line 36.
-
-("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count118
-\scratchdimen=\dimen146
-\scratchbox=\box30
-\nofMPsegments=\count119
-\nofMParguments=\count120
-\everyMPshowfont=\toks24
-\MPscratchCnt=\count121
-\MPscratchDim=\dimen147
-\MPnumerator=\count122
-\everyMPtoPDFconversion=\toks25
-)
 Package caption Info: Begin \AtBeginDocument code.
 Package caption3 Info: subfig package 1.2 or 1.3 is loaded.
 LaTeX Info: Redefining \subref on input line 36.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Try loading font information for OMS+ptm on input line 51.
- ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <8> not available
@@ -338,7 +327,7 @@ LaTeX Warning: Reference `' on page 1 undefined on input line 71.
 
 
 Underfull \hbox (badness 3492) in paragraph at lines 71--72
-[]\OT1/ptm/m/n/10 In this pa-per we re-view the VRPF for piecewise-
+[][]\OT1/ptm/m/n/10 In this pa-per we re-view the VRPF for piecewise-
  []
 
 LaTeX Font Info:    Try loading font information for U+msa on input line 77.
@@ -354,7 +343,7 @@ LaTeX Font Info:    Try loading font information for U+euf on input line 88.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\ueuf.fd"
 File: ueuf.fd 2009/06/22 v3.00 Euler Fraktur
-) [1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
+) [1
 
 
 ]
@@ -369,84 +358,121 @@ Overfull \hbox (45.22815pt too wide) in alignment at lines 151--154
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 172--173
-[] []\OT1/ptm/m/n/10 Sample a his-tory $\OMS/cmsy/m/n/10 f\OML/cmm/m/it/10 [];
- x[]\OMS/cmsy/m/n/10 g 
+[] [][]\OT1/ptm/m/n/10 Sample a his-tory $\OMS/cmsy/m/n/10 f\OML/cmm/m/it/10 [
+]; x[]\OMS/cmsy/m/n/10 g 
  []
 
 [2]
-Overfull \hbox (14.05315pt too wide) in alignment at lines 194--198
+Overfull \hbox (18.31998pt too wide) in alignment at lines 194--198
  [] [] [] [][]
  []
 
 
-LaTeX Warning: Citation `Bunch2012' on page 3 undefined on input line 210.
+LaTeX Warning: Citation `Bunch2012' on page 3 undefined on input line 218.
 
 [3]
-Overfull \hbox (42.6pt too wide) in alignment at lines 222--227
+Overfull \hbox (42.6pt too wide) in alignment at lines 230--235
  [] [] [] [][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 262--263
-[] []\OT1/ptm/m/n/10 Initialise sam-pler with $[] \OMS/cmsy/m/n/10 
- []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 266--267
-[] []\OT1/ptm/m/n/10 Propose a new past $\OML/cmm/m/it/10 [] \OMS/cmsy/m/n/10 
-
+Underfull \hbox (badness 10000) in paragraph at lines 274--275
+[] [][]\OT1/ptm/m/n/10 Propose a new past $\OML/cmm/m/it/10 [] \OMS/cmsy/m/n/1
+0 
  []
 
 [4]
-Overfull \hbox (62.51663pt too wide) in alignment at lines 315--322
+Overfull \hbox (62.51663pt too wide) in alignment at lines 323--330
  [] [] [] [][]
  []
 
 
-Overfull \hbox (3.11833pt too wide) in alignment at lines 338--344
+Overfull \hbox (3.11833pt too wide) in alignment at lines 346--352
  [] [] [] [][]
  []
 
-(D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft1_VRPSl.bbl
+
+LaTeX Warning: Reference `fig:2D_states' on page 5 undefined on input line 360.
+
+
+File: D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_Rad
+arPosOnly_RS1_trajectory.eps Graphic file (type eps)
+
+<D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPos
+Only_RS1_trajectory.eps>
+File: D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_Rad
+arPosOnly_RS1_states.eps Graphic file (type eps)
+
+<D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPos
+Only_RS1_states.eps>
+File: D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_Rad
+arPosOnly_RS1_observations.eps Graphic file (type eps)
+
+<D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPos
+Only_RS1_observations.eps> [5]
+File: D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_Rad
+arPosOnly_RS1_filtparts.eps Graphic file (type eps)
+
+<D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPos
+Only_RS1_filtparts.eps>
+File: D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_Rad
+arPosOnly_RS1_smoothparts.eps Graphic file (type eps)
+
+<D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPos
+Only_RS1_smoothparts.eps>
+File: D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_Rad
+arPosOnly_RS1_jumpkd.eps Graphic file (type eps)
+
+<D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPos
+Only_RS1_jumpkd.eps>
+File: D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_Rad
+arPosOnly_RS1_rmse.eps Graphic file (type eps)
+
+<D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPos
+Only_RS1_rmse.eps>
+File: D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_Rad
+arPosOnly_RS1_uniquepts.eps Graphic file (type eps)
+
+<D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPos
+Only_RS1_uniquepts.eps> [6]
+(D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft2_VRPSl.bbl
 Underfull \hbox (badness 4072) in paragraph at lines 25--28
-[]\OT1/ptm/m/n/8 N. Gor-don, D. Salmond, and A. Smith, ``Novel ap-proach to
+[][]\OT1/ptm/m/n/8 N. Gor-don, D. Salmond, and A. Smith, ``Novel ap-proach to
  []
 
-[5]) [6
+** WARNING: IEEEtran.bst: No hyphenation pattern has been
+** loaded for the language `English'. Using the pattern for
+** the default language instead.
+** WARNING: IEEEtran.bst: No hyphenation pattern has been
+** loaded for the language `English'. Using the pattern for
+** the default language instead.
 
-] (D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft1_VRPSl.aux)
+Underfull \hbox (badness 10000) in paragraph at lines 106--117
+\OT1/ptm/m/n/8 http : / / www . scopus . com / inward / record . url ? eid = 2-
+[]s2 . 0-[]0031347068 &
+ []
+
+** WARNING: IEEEtran.bst: No hyphenation pattern has been
+** loaded for the language `English'. Using the pattern for
+** the default language instead.
+** WARNING: IEEEtran.bst: No hyphenation pattern has been
+** loaded for the language `English'. Using the pattern for
+** the default language instead.
+) [7] (D:\pb404\VariableRateAlgorithms\VRPS_Paper\draft2_VRPSl.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 3837 strings out of 494019
- 56842 string characters out of 3143883
- 130546 words of memory out of 3000000
- 7061 multiletter control sequences out of 15000+200000
- 48243 words of font info for 100 fonts, out of 3000000 for 9000
+ 3576 strings out of 494020
+ 54891 string characters out of 3143906
+ 123016 words of memory out of 3000000
+ 6807 multiletter control sequences out of 15000+200000
+ 33921 words of font info for 87 fonts, out of 3000000 for 9000
  717 hyphenation exceptions out of 8191
- 36i,15n,38p,1281b,482s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Progra
-m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program 
-Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Fi
-les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program File
-s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (
-x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86
-)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/M
-iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files (x86)/MiKTe
-X 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.
-9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/
-fonts/type1/public/amsfonts/cm/cmsy5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fon
-ts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
-type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/euler/eufm10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
-pe1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/tim
-es/utmbi8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.
-pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on draft1_VRPSl.pdf (6 pages, 223952 bytes).
-PDF statistics:
- 90 PDF objects out of 1000 (max. 8388607)
- 0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36i,15n,45p,1259b,482s stack positions out of 5000i,500n,10000p,200000b,50000s
 
+Output written on draft2_VRPSl.dvi (7 pages, 72576 bytes).

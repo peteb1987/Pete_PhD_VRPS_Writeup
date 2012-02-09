@@ -102,9 +102,9 @@ The innovations may be treated as random variables dependent on the previous val
 
 Once the next changepoint time is known, (\ref{eq:disc_time_state_diff_eq}) may be used to calculate the state at this changepoint, $x_k = x(\tau_k)$. In addition, the state at the observation times will be given by $\hat{x}_n = x(t_n)$, which is needed to evaluate measurement likelihoods.
 
-To keep the following derivations concise, an additional variable is introduced to denote each changepoint time-innovation pair $\theta_k = \{\tau_k, v_k\}$.
+To keep the following derivations concise, an additional variable is introduced to denote each changepoint time-innovation pair $\theta_k = \{\tau_k, v_k\}$. It will often be assumed unless stated otherwise that the most recent changepoint occured at time $\tau_k$ and that the current innovation value is $v_k$.
 
-It will be useful to denote the set of changepoints and parameters (of unspecified size) which occur within some range of time. This will be written as $\theta_{[s,t]} = \{ \theta_k \forall k : s<\tau_k<t \}$. This notation may also be thought of as representing the number, $k$, of changepoints within the interval, plus the times and innovations of each changepoint. Note also that such a variable not only conveys where changepoints occur, but also where they do not within the specfied range.
+It will be useful to denote the set of changepoints and parameters (of unspecified size) which occur within some range of time. This will be written as $\theta_{[s,t]} = \{ \theta_k \forall k : s<\tau_k<t \}$. Such a variable may be thought of as representing the number, $k$, of changepoints within the interval, plus the times and innovations of each changepoint. Note also that such a variable not only conveys where changepoints occur, but also where they do not within the specfied range.
 
 
 
@@ -201,6 +201,14 @@ Here, $s_k$ is the index of the earliest observation to come after either $\tau_
 
 In addition, simpler moves can be conducted in which only $v_k$ is changed, or more complex moves in which multiple past changepoints are altered. The computational complexity for such moves is likely to be high, however, because of the large number of likelihood evaluations to be made. It is also possible to included reversible jump moves \cite{Green1995} to add or remove changepoints entirely.
 
+A proposal distribution for resample-move steps can be formulated using the Unscented Transform \cite{Julier1997} to approximate the ``optimal importance distribution'' \cite{}{\meta Cite someone who explains this term}. Ideally, new values for the random variables should be proposed from the conditional distribution:
+
+\begin{IEEEeqnarray}{rCl}
+p(v_k|\theta_{1:k-1}, \tau_k, y_{1:n}) & \propto & p(y_{s_k:n}|\theta_{1:k}) p(v_k)
+\end{IEEEeqnarray}
+
+This may be approximated using an Unscented Kalman Filter (UKF) \cite{Julier1997} with no prediction steps. If changepoints occurly sparsely, this can lead to large amounts of computation due to the number of observations in the set $y_{s_k:n}$. In this case, the proposal can be formed using only a subset of the available observations, thus limiting the computational load.
+
 
 
 \section{The Variable Rate Particles Smoother}
@@ -217,7 +225,7 @@ In the derivation of the VRPF, the filter targetted the joint distribution over 
 
 Analagously with $\theta$, a new variable is introduced to represent changepoint time-state pairs, $\zeta_k = \{\tau_k, x_k\}$. Thus if $\zeta_{0:K}$ is known (with $\tau_0 = 0$), it is possible to calculate the innovation sequence using (\ref{eq:state_invert}) and thence to calculate the state at any time. Thus, for piecewise-deterministic variable rate models, the posterior distribution targetted by a smoother is $p(\zeta_{[0,T]}|y_{1:N})$. An approximation to this distibution may be derived from the final filtering results, by tranforming from the innovation sequence, $v_{[0,T]}$, to the changepoint state sequence, $x_{[0,T]}$. This approximation will tend to suffer from particle degeneracy due to the resampling procedure, i.e. the number of unique particles decreases for earlier times, giving a poor representation of the distribution \cite{Kitagawa1996}. An improved smoothing algorithm is needed to rejeuvenate this particle diversity.
 
-For an ordinary fixed rate model, particle smoothing may be conducted by sequentially resampling states from the filtering approximations backwards in time. With the nonlinear variable rate models under consideration here, this process is not tractable. Instead, particles are sampled from the joint smoothing distribution using MCMC. The posterior distribution is first expanded using Bayes theorem.
+For an ordinary fixed rate model, particle smoothing may be conducted by sequentially resampling states from the filtering approximations backwards in time. With the nonlinear variable rate models under consideration here, this process is not tractable. Instead, particles are sampled from the joint smoothing distribution using MCMC. The posterior distribution is first expanded using Bayes theorem around observation time $t_n$.
 
 \begin{IEEEeqnarray}{rCl}
  \IEEEeqnarraymulticol{3}{l}{p(\zeta_{[0,T]}|y_{1:N})} \nonumber \\
@@ -226,15 +234,15 @@ For an ordinary fixed rate model, particle smoothing may be conducted by sequent
        &         &  \times p(y_{r_k^+ +1:N}|\hat{x}_{r_k^+ +1:N}) p(y_{r_k^-:r_k^+}|\hat{x}_{r_k^-:r_k^+}) p(y_{1:r_k^- -1}|\hat{x}_{1:r_k^- -1})  \IEEEeqnarraynumspace
 \end{IEEEeqnarray}
 
-The likelihood term has been split up into three parts, divided at $r_k^-$ and $r_k^+$, the earliest and latest observations to occur between the successive changepoints $\tau_k$ and $\tau_{k+1}$, which lie each side of the observation index $n$.
+The likelihood term has been split up into three parts, divided at $r_k^-$ and $r_k^+$, the earliest and latest observations to occur between the successive changepoints $\tau_k$ and $\tau_{k+1}$, which lie before and after $t_n$ respectively.
 
-A Markov chain is initialised by sampling a particle from the approximation generated by the final filtering step. Because this is an approximation of the target distribution, no burn-in is requiired. Proceeding backwards in time, MH steps are conducted by proposing a replacement for the changepoint sequence history from the appropriate filtering approximation. At the $n$th step, the future changepoints are considered to be fixed, $\tilde{\zeta}_{[0,T]}$. A replacement for the past changepoints is proposed from the filtering particles.
+A Markov chain is initialised by sampling a particle from the approximation generated by the final filtering step. Because this is an approximation of the target distribution, no burn-in is requiired. Proceeding backwards in time, MH steps are conducted by proposing a replacement for the changepoint sequence history from the appropriate filtering approximation. At the $n$th step, the future changepoints are considered to be fixed, $\tilde{\zeta}_{[t_n,T]}$. A replacement for the past changepoints is proposed from the filtering particles.
 
 \begin{equation}
  \zeta_{[0,t_n]}^* \sim q(\zeta_{[0,t_n]}|y_{1:n}) = \sum_j \gamma_n^{(j)} \delta_{(\zeta_{[0,t_n]}^{(j)})}(\zeta_{[0,t_n]})
 \end{equation}
 
-This proposed move is accepted with the following acceptance probability, where $\zeta_{[0,t_n]}^{(m)}$ is the previous sequence of past changepoints.
+This proposed move is accepted with the following acceptance probability, where $\zeta_{[0,t_n]}^{(m)}$ is the previous sequence of past changepoints in the Markov chain.
 
 \begin{IEEEeqnarray}{rCl}
  \alpha & = & \frac{ p(\zeta_{[0,t_n]}^*, \tilde{\zeta}_{[t_n,T]}|y_{1:N}) q(\zeta_{[0,t_n]}^{(m)}|y_{1:n}) }{ p(\zeta_{[0,t_n]}^{(m)}, \tilde{\zeta}_{[t_n,T]}|y_{1:N}) q(\zeta_{[0,t_n]}^*|y_{1:n}) } \nonumber \\
@@ -249,7 +257,7 @@ The first fraction is simply a ratio of proposal weights for the current and pro
 The third ratio consists of the transition probability between two known changepoints, $\zeta_k$ and $\zeta_{k+1}$, and the likelihood of observations occurring between them. These may be found by calculating the innovation, $v_k$, to get from $\zeta_k$ to $\zeta_{k+1}$. The continuous state trajectory may then be calculated allowing the likelihood terms to be evaluated. The transition density term is given by:
 
 \begin{IEEEeqnarray}{rCl}
- p(\zeta_{k+1}|\zeta_{k}) & = & p(\tau_{k+1}|\tau_{k}) p(v_{k+1}|v_{k})
+ p(\zeta_{k+1}|\zeta_{k}) & = & p(\tau_{k+1}|\tau_{k}) p(v_{k}|v_{k-1})
 \end{IEEEeqnarray}
 
 The variable rate particle smoother (VRPS) is summarised below.%in algorithm~\ref{alg:MCMC-VRPS}.
@@ -259,15 +267,15 @@ The variable rate particle smoother (VRPS) is summarised below.%in algorithm~\re
   \STATE Run a particle filter to approximate $p(\theta_{[0,t_n]}, x_0|y_{1:n})$ for each $n$.
   \STATE Convert each particle innovation sequence to a changepoint state sequence, to produce approximations of $p(\zeta_{[0,t_n]}|y_{1:n})$.
   \FOR{$i=1 \dots S$}
-    \STATE Initialise sampler with $\tilde{\zeta}_{[0,T]}^{(i)} \sim \sum_{j} w_N^{(j)} \delta_{\zeta,x_{[0,T]}^{(j)}}(\zeta,x_{[0,T]})$
+    \STATE Initialise sampler with $\tilde{\zeta}_{[0,T]}^{(i)} \sim \sum_{j} w_N^{(j)} \delta_{\zeta_{[0,T]}^{(j)}}(\zeta_{[0,T]})$
     \FOR{$n=N \dots 1$}
       \STATE $\zeta_{[0,T]}^{(i)(0)} \gets \tilde{\zeta}_{[0,T]}^{(i)}$.
       \FOR{$m=1 \dots M$}
         \STATE Propose a new past $\zeta_{[0,t_n]}^{(i)*} \sim \sum_j \gamma_n^{(j)} \delta_{(\zeta_{[0,t_n]}^{(j)})}(\zeta_{[0,t_n]})$.
 	      \STATE Calculate $\alpha$ using equation~\ref{eq:MCMC-VRPS_ap}
-	      \STATE With probability $\alpha$, $\zeta_{[0,t]}^{(i)(m)} \gets \zeta_{[0,T]}^{(i)*}$. Otherwise $\zeta_{[0,t]}^{(i)(m)} \gets \zeta_{[0,t]}^{(i)(m-1)}$.
+	      \STATE With probability $\alpha$, $\zeta_{[0,t_n]}^{(i)(m)} \gets \zeta_{[0,t_n]}^{(i)*}$. Otherwise $\zeta_{[0,t_n]}^{(i)(m)} \gets \zeta_{[0,t_n]}^{(i)(m-1)}$.
       \ENDFOR
-      \STATE $\tilde{\zeta}_{[0,t]}^{(i)} \gets \zeta_{[0,t]}^{(i)(M)}$.
+      \STATE $\tilde{\zeta}_{[0,t_n]}^{(i)} \gets \zeta_{[0,t]}^{(i)(M)}$.
     \ENDFOR
   \ENDFOR
  \end{algorithmic}
@@ -349,12 +357,72 @@ The observation noise terms, $\epsilon_{i,n}$ are assumed to be independent and 
 
 \section{Simulations}
 
+The VRPF and VRPS algorithms were tested on simulated data. An example trajectory using the 2D intrinsic-coordinate model is shown in figure~\ref{fig:2D_trajectory}. Figures~\ref{fig:2D_states} and~\ref{fig:2D_observations} show individual states and observations.
+
+\begin{figure}[hbt]
+\centering \includegraphics[width=0.5\columnwidth]{D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPosOnly_RS1_trajectory.eps}
+\caption{Example trajectory simulated from 2D model.}
+\label{fig:2D_trajectory}
+\end{figure}
+
+\begin{figure}[hbt]
+\centering \includegraphics[width=0.5\columnwidth]{D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPosOnly_RS1_states.eps}
+\caption{Example states simulated from 2D model.}
+\label{fig:2D_state}
+\end{figure}
+
+\begin{figure}[hbt]
+\centering \includegraphics[width=0.5\columnwidth]{D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPosOnly_RS1_observations.eps}
+\caption{Example observations simulated from 2D model.}
+\label{fig:2D_observations}
+\end{figure}
+
+The VRPF was run using 50 particles and a RM step with a UKF proposal whenever a particle is replicated through resampling. The VRPS was used to simulated 50 smoothing trajectories.
+
+Figure~\ref{fig:2D_particles} shows the particle position estimates from the final VRPF frame and the VRPS.
+
+\begin{figure}[hbt]
+\subfloat[VRPF]{\includegraphics[width=0.45\columnwidth]{D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPosOnly_RS1_filtparts.eps}}
+\subfloat[VRPS]{\includegraphics[width=0.45\columnwidth]{D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPosOnly_RS1_smoothparts.eps}}
+\caption{VRPF and VRPS particle position estimates for an example 2D trajectory}
+\label{fig:2D_particles}
+\end{figure}
+
+Figure~\ref{fig:2D_jumpkd} shows a kernel density estimate of the changepoint times for the VRPF and VRPS.
+
+\begin{figure}[hbt]
+\centering \includegraphics[width=0.5\columnwidth]{D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPosOnly_RS1_jumpkd.eps}
+\caption{VRPF (top) and VRPS (bottom) kernel density estimates of jump times.}
+\label{fig:2D_jumpkd}
+\end{figure}
+
+While the VRPF generally overestimates the number of jumps, the VRPS is remarkably accurate. In this example, the VRPF estimate 15.1 changepoints (average over all particles), while the VRPS estimates 10.9. The true value is 11.
+
+State estimates were formed by averaging the state values from each particle at the observation times. Root mean square error values can then be calculated for the algorithms. By this metric, the VRPS does not improve upon the performance of the VRPF. RMSEs over time for the example case are shown in figure~\ref{fig:2D_rmse}
+
+\begin{figure}[hbt]
+\centering \includegraphics[width=0.5\columnwidth]{D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPosOnly_RS1_rmse.eps}
+\caption{RMSE over time in position and velocity estimates for the filter, KS and VRPS.}
+\label{fig:2D_rmse}
+\end{figure}
+
+The benefit of the VRPS is in the improved particle diversity of the state estimates. This is illustrated in figure~\ref{fig:2D_uniquepts}, which shows the number of unique state trajectories up to each time, i.e. the number of unique estimates of $\theta_{[0,t]}$ for each $t$.
+
+\begin{figure}[hbt]
+\centering \includegraphics[width=0.5\columnwidth]{D:/pb404/VariableRateAlgorithms/Results_for_paper/VRPFS/2D_WithLinVel_RadarPosOnly_RS1_uniquepts.eps}
+\caption{Number of unique particles over time.}
+\label{fig:2D_uniquepts}
+\end{figure}
+
+
+
+\begin{meta}
 \begin{itemize}
-	\item Improved RMSE performance
-	\item Improved particle diversity
+	\item Presumably there should be some comparison of batch results. What?
+	\item Label the graphs better
+	\item Add VRPF without RM
 \end{itemize}
-
-
+\end{meta}
 
 
 
@@ -445,7 +513,7 @@ The observation noise terms, $\epsilon_{i,n}$ are assumed to be independent and 
 
 
 \section{Conclusion}
-The conclusion goes here.
+Improved filtering and smoothing algorithms have been presented for inference with variable rate models. The addition of resample-move steps to the basic variable rate particle filter allows the algorithm to run with a fraction of the number of particles. A smoother for estimation of the joint posterior distribution is not tractable using conventional backwards resampling methods. The algorithm derived instead uses MCMC to resample particles from the filter approximations. The resulting smoother does not necessarily improve the RMSE of state estimates, but the number of unique particles in the approximation is increased significantly.
 
 
 
